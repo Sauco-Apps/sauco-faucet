@@ -1,5 +1,5 @@
-var lisk = require('./lisk.js');
+var ark = require('./ark.js');
 
 module.exports = function (app) {
-    lisk(app);
+    ark(app);
 }

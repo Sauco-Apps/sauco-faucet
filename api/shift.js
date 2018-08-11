@@ -7,7 +7,7 @@ module.exports = function (app) {
         async.series([
             function (cb) {
                 request({
-                    url : req.lisk + "/api/accounts/getBalance?address=" + app.locals.address,
+                    url : req.shift + "/api/accounts/getBalance?address=" + app.locals.address,
                     json : true
                 }, function (error, resp, body) {
                     if (error || resp.statusCode != 200 || !body.success) {
@@ -19,7 +19,7 @@ module.exports = function (app) {
             },
             function (cb) {
                 request({
-                    url : req.lisk + "/api/blocks/getFee",
+                    url : req.shift + "/api/blocks/getFee",
                     json : true
                 }, function (error, resp, body) {
                     if (error || resp.statusCode != 200 || !body.success) {
@@ -50,31 +50,31 @@ module.exports = function (app) {
                     amount : app.locals.amountToSend,
                     donation_address : app.locals.address,
                     totalCount : app.locals.totalCount,
-                    network : app.set("lisk network")
+                    network : app.set("shift network")
                 });
             }
         });
     });
 
-    app.post("/api/sendLisk", function (req, res) {
+    app.post("/api/sendshift", function (req, res) {
         var error = null,
             address = req.body.address,
             captcha_response = req.body.captcha,
             ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
-        if (!address) { error = "Missing LISK address"; }
+        if (!address) { error = "Missing shift address"; }
 
         if (!captcha_response) { error = "Captcha validation failed, please try again"; }
 
         if (address) {
             address = address.trim();
 
-            if (address.indexOf('L') != address.length - 1 && address.indexOf('D') != address.length - 1) {
-                error = "Invalid LISK address";
+            if (address.indexOf('S') != address.length - 1 && address.indexOf('D') != address.length - 1) {
+                error = "Invalid shift address";
             }
 
             var num = address.substring(0, address.length - 1);
-            if (isNaN(num)) { error = "Invalid LISK address"; }
+            if (isNaN(num)) { error = "Invalid shift address"; }
         }
 
         if (error) {
@@ -87,7 +87,7 @@ module.exports = function (app) {
                     if (error) {
                         return cb("Failed to authenticate IP address");
                     } else if (value) {
-                        return cb("This IP address has already received LISK");
+                        return cb("This IP address has already received shift");
                     } else {
                         return cb(null);
                     }
@@ -96,9 +96,9 @@ module.exports = function (app) {
             authenticateAddress : function (cb) {
                 req.redis.get(address, function (error, value) {
                     if (error) {
-                        return cb("Failed to authenticate LISK address");
+                        return cb("Failed to authenticate shift address");
                     } else if (value) {
-                        return cb("This account has already received LISK");
+                        return cb("This account has already received shift");
                     } else {
                         return cb(null);
                     }
@@ -137,7 +137,7 @@ module.exports = function (app) {
             cacheAddress : function (cb) {
                 req.redis.set(address, address, function (error) {
                     if (error) {
-                        return cb("Failed to cache LISK address");
+                        return cb("Failed to cache shift address");
                     } else {
                         return cb(null);
                     }
@@ -146,7 +146,7 @@ module.exports = function (app) {
             sendAddressExpiry : function (cb) {
                 req.redis.send_command("EXPIRE", [address, 60], function (error) {
                     if (error) {
-                        return cb("Failed to send LISK address expiry");
+                        return cb("Failed to send shift address expiry");
                     } else {
                         return cb(null);
                     }
@@ -154,7 +154,7 @@ module.exports = function (app) {
             },
             sendTransaction : function (cb) {
                 request({
-                    url : req.lisk + "/api/transactions",
+                    url : req.shift + "/api/transactions",
                     method : "PUT",
                     json : true,
                     body : {
