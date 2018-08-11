@@ -1,7 +1,7 @@
 {
-  "name": "ark-faucet",
+  "name": "sauco-faucet",
   "version": "1.0.0",
-  "description": "ѦRK faucet application",
+  "description": "SAUCO faucet application",
   "repository": {
     "type": "git",
     "url": "https://github.com/densmirnov/ark-faucet.git"
